@@ -1,5 +1,21 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
 package com.liferay.matrix.web.internal.internal.serial;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import gnu.io.CommPort;
 /**
  * apt-get install librxtx-java
@@ -15,8 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TooManyListenersException;
-
-import com.badlogic.gdx.Gdx;
 
 /**
  * codebase:
@@ -59,11 +73,11 @@ public class SerialCommunicationUtil {
 	private CommPort commPort = null;
 	private boolean isOpen = false;
 
-	public CommHelper(SerialReaderListener listener) {
+	public SerialCommunicationUtil(SerialReaderListener listener) {
 		this.listener = listener;
 	}
 
-	public CommHelper() {
+	public SerialCommunicationUtil() {
 	}
 
 	public boolean isCommPort() {
@@ -84,7 +98,7 @@ public class SerialCommunicationUtil {
 	}
 
 	public void listPorts() {
-		Gdx.app.log("CommPort", "list port");
+		_log.debug("list port");
 
 		@SuppressWarnings("unchecked")
 		java.util.Enumeration<CommPortIdentifier> ports = CommPortIdentifier
@@ -92,7 +106,7 @@ public class SerialCommunicationUtil {
 
 		while (ports.hasMoreElements()) {
 			CommPortIdentifier curPort = ports.nextElement();
-			Gdx.app.log("CommPort",
+			_log.debug(
 					"Port:" + curPort.getName() + "-" + curPort.getPortType());
 		}
 	}
@@ -137,13 +151,13 @@ public class SerialCommunicationUtil {
 			initSerialPort(serialPort);
 
 			isOpen = true;
-			Gdx.app.log("CommHelper", "connected to serial line");
+			_log.debug("connected to serial line");
 
 		} catch (PortInUseException e) {
-			Gdx.app.error("CommHelper", port + " is in use. (" + e.toString()
+			_log.error(port + " is in use. (" + e.toString()
 					+ ")");
 		} catch (Exception e) {
-			Gdx.app.error("CommHelper",
+			_log.error(
 					"Failed to open " + port + "(" + e.toString() + ")");
 		}
 	}
@@ -153,7 +167,7 @@ public class SerialCommunicationUtil {
 	}
 
 	public void connectToFirstSerialPort(int baudRate) {
-		Gdx.app.log("CommPort", "connect to first port");
+		_log.debug("connect to first port");
 
 		BAUD_RATE = baudRate;
 
@@ -164,7 +178,7 @@ public class SerialCommunicationUtil {
 		while (ports.hasMoreElements()) {
 			CommPortIdentifier curPort = ports.nextElement();
 
-			Gdx.app.log("CommPort",
+			_log.debug(
 					"Port:" + curPort.getName() + "-" + curPort.getPortType());
 
 			if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL) {
@@ -196,9 +210,10 @@ public class SerialCommunicationUtil {
 			commPort.close();
 			commPort = null;
 			isOpen = false;
-			Gdx.app.log("CommHelper", "Serial port closed");
+			_log.debug("Serial port closed");
 		}
 	}
 
-
+	private static final Log _log = LogFactoryUtil.getLog(
+		SerialCommunicationUtil.class);
 }

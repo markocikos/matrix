@@ -1,3 +1,9 @@
+repositories {
+	maven {
+		url "https://mvnrepository.com/artifact/org.rxtx/rxtx"
+	}
+}
+
 dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.portal.portlet.bridge.soy", version: "3.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
@@ -10,6 +16,8 @@ dependencies {
 
 	provided group: "com.liferay", name: "com.liferay.websocket.whiteboard", version: "1.0.1"
 	provided group: "javax.websocket", name: "javax.websocket-api", version: "1.1"
+
+	compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
 }
 
 deployDependencies {

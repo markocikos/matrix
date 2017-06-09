@@ -14,6 +14,7 @@
 
 package com.liferay.matrix.web.internal.internal.websocket;
 
+import com.liferay.matrix.web.internal.internal.serial.SerialCommunicationUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -36,12 +37,17 @@ public class MatrixEndpoint extends Endpoint {
 
 	@Override
 	public void onOpen(final Session session, EndpointConfig endpointConfig) {
+		final SerialCommunicationUtil serialCommunicationUtil =
+			new SerialCommunicationUtil();
+
 		session.addMessageHandler(
 			new MessageHandler.Whole<String>() {
 
 				@Override
 				public void onMessage(String text) {
 					_log.debug(text);
+
+					serialCommunicationUtil.listPorts();
 				}
 
 			}
