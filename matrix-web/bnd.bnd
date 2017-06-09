@@ -1,0 +1,6 @@
+Bundle-Name: Liferay LED Matrix Web
+Bundle-SymbolicName: com.liferay.matrix.web
+Bundle-Version: 1.0.0
+Require-Capability:\
+	soy;\
+		filter:="(type=metal)"
