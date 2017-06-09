@@ -214,6 +214,15 @@ public class SerialCommunicationUtil {
 		}
 	}
 
+	public void write(String text) {
+	   try {
+		   out.write(text.getBytes());
+		   out.flush();
+	   } catch (IOException e) {
+		   _log.error(e);
+	   }
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		SerialCommunicationUtil.class);
 }

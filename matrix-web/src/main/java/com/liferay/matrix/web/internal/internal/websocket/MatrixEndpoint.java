@@ -23,6 +23,7 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
+import com.liferay.portal.kernel.util.Validator;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -37,8 +38,9 @@ public class MatrixEndpoint extends Endpoint {
 
 	@Override
 	public void onOpen(final Session session, EndpointConfig endpointConfig) {
-		final SerialCommunicationUtil serialCommunicationUtil =
-			new SerialCommunicationUtil();
+		_serialCommunicationUtil = new SerialCommunicationUtil();
+
+		_serialCommunicationUtil.connectToFirstSerialPort();
 
 		session.addMessageHandler(
 			new MessageHandler.Whole<String>() {
@@ -47,7 +49,16 @@ public class MatrixEndpoint extends Endpoint {
 				public void onMessage(String text) {
 					_log.debug(text);
 
-					serialCommunicationUtil.listPorts();
+					try {
+						_serialCommunicationUtil.write(text);
+					}
+					catch (Exception e) {
+						_log.error(e);
+					}
+
+					if (Validator.equals(text, "stop")) {
+						_serialCommunicationUtil.stop();
+					}
 				}
 
 			}
@@ -55,5 +66,7 @@ public class MatrixEndpoint extends Endpoint {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(MatrixEndpoint.class);
+
+	private static SerialCommunicationUtil _serialCommunicationUtil;
 
 }
